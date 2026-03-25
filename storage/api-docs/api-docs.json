@@ -2608,7 +2608,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "The change role is Prevented Because the user account is deactivated, \n     *                           or you do not have the permission to change User Role or change Role very important User."
+                                            "example": "The change role is Prevented Because the user account is deactivated, \n     *                 or you do not have the permission to change User Role or change Role very important User."
                                         }
                                     },
                                     "type": "object"
