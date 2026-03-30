@@ -761,14 +761,83 @@
                 ]
             }
         },
-        "/api/blog-content/search/{user_id}": {
+        "/api/blog-content/search-user": {
+            "get": {
+                "tags": [
+                    "Blog Content"
+                ],
+                "summary": "Retrieve Users resulted from Search.",
+                "description": "Retrieve all available Users resulted from the search.",
+                "operationId": "0fda3c3a888b1d07b56a52997fa5e743",
+                "parameters": [
+                    {
+                        "name": "nameKey",
+                        "in": "query",
+                        "description": "Search keyword",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "aka"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Users retrieved successfully(may be empty).",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "Success"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "All available Users resulted from the search Retrieved Successfully."
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "Success"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "There is no available Users resulted from the search."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/blog-content/posts-user/{id}": {
             "get": {
                 "tags": [
                     "Blog Content"
                 ],
                 "summary": "all Posts and all Comments and all of a User and all available Reactos",
                 "description": "Get all posts and all comments connected to every post, and reactos connected to every post and comment of a User and all available reactos.",
-                "operationId": "6c2cd5973da7712d015728e7d6f665bb",
+                "operationId": "38acc8cb27afa409da363971c8a32f24",
                 "parameters": [
                     {
                         "name": "user_id",

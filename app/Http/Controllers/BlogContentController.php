@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\ReactResource;
+use App\Http\Resources\UserResource;
 use App\Models\Post;
 use App\Models\React;
 use App\Models\User;
@@ -81,7 +82,58 @@ class BlogContentController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/blog-content/search/{user_id}",
+     *     path="/api/blog-content/search-user",
+     *     summary="Retrieve Users resulted from Search.",
+     *     tags={"Blog Content"},
+     *     description="Retrieve all available Users resulted from the search.",
+     *     security={{"sanctum":{}}},
+     * 
+     *     @OA\Parameter(name="nameKey",in="query",required=true,description="Search keyword",@OA\Schema(type="string", example="aka")),
+     * 
+
+     *     @OA\Response(
+     *         response=200,
+     *         description="Users retrieved successfully(may be empty).",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(
+     *                     @OA\Property(property="status", type="string", example="Success"),
+     *                     @OA\Property(property="message", type="string", example="All available Users resulted from the search Retrieved Successfully.")
+     *                 ),
+     *                 @OA\Schema(
+     *                     @OA\Property(property="status", type="string", example="Success"),
+     *                     @OA\Property(property="message", type="string", example="There is no available Users resulted from the search.")
+     *                 )
+     *             }
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated."
+     *     ),
+     * )
+     */
+    public function getUser(Request $request)
+    {
+        $request->validate([
+            'nameKey' => 'required|string',
+        ]);
+        $users = User::where('name','like','%'.$request->nameKey.'%')->select('id','name','email','favicon')->get();
+
+        return response( UserResource::collection($users)->additional
+            ([
+                'status' => 'Success',
+                'message' => $users->isEmpty()
+                ? 'There is no available Users resulted from the search.'
+                :'All available Users resulted from the search Retrieved Successfully.',
+            ])
+        ,200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/blog-content/posts-user/{id}",
      *     summary="all Posts and all Comments and all of a User and all available Reactos",
      *     tags={"Blog Content"},
      *     description="Get all posts and all comments connected to every post, and reactos connected to every post and comment of a User and all available reactos.",
@@ -116,11 +168,7 @@ class BlogContentController extends Controller
      *                 @OA\Property(property="to", type="integer", example=15),
      *                 @OA\Property(property="total", type="integer", example=50)
      *             ),
-     *             @OA\Property(
-     *                 property="reactos",
-     *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/ReactResource")
-     *             )
+     *             @OA\Property(property="reactos",type="array",@OA\Items(ref="#/components/schemas/ReactResource"))
      *         )
      *     ),
      * 

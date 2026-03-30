@@ -47,7 +47,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
         Route::post('/reactos/comment',[ReactosController::class,'reactComment']);
     });
     Route::get('/blog-content',[BlogContentController::class,'index'])->middleware('permission:'. PermissionsEnum::VIEW_BLOG_CONTENT->value);
-    Route::get('/blog-content/search/{user_id}',[BlogContentController::class,'getUserPosts']);
+    Route::get('/blog-content/search-user',[BlogContentController::class,'getUser']);
+    Route::get('/blog-content/posts-user/{id}',[BlogContentController::class,'getUserPosts']);
 
     Route::get('/users',[UsersController::class,'index'])->middleware('permission:'. PermissionsEnum::VIEW_USERS->value);
     Route::put('/users/change-role/{user}',[UsersController::class,'changeRole'])->middleware('permission:'. PermissionsEnum::CHANGE_USER_ROLES->value .'|'. PermissionsEnum::CHANGE_VIU_ROLES->value);
