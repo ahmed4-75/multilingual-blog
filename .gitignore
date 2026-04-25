@@ -4,6 +4,7 @@
 /public/hot
 /public/storage
 /storage/*.key
+!storage/app/private/favicons/default/user_favicon.jpg
 /storage/pail
 /vendor
 .env
