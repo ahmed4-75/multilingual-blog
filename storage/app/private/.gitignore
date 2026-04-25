@@ -1,4 +1,5 @@
 *
-!favicons
-!favicons/default
+!favicons/
+!favicons/default/
+!favicons/default/user_favicon.jpg
 !.gitignore
