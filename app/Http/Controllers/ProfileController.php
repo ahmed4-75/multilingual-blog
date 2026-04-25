@@ -160,8 +160,8 @@ class ProfileController extends Controller
             'lang' => $request->lang
         ]);
         if($request->hasFile('favicon')){
-            if (Storage::exists('public/favicons/'.$user->favicon)) {
-                Storage::delete('public/favicons/'.$user->favicon);
+            if (Storage::exists('favicons/'.$user->favicon)) {
+                Storage::delete('favicons/'.$user->favicon);
             }
             $file = $request->file('favicon');
             $fileName = $user->id."_".Str::slug($user->name)."_favicon.".$file->getClientOriginalExtension();
