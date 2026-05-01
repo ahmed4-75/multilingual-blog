@@ -42,9 +42,19 @@ class BlogContentController extends Controller
      *                 @OA\Property(property="current_page", type="integer", example=1),
      *                 @OA\Property(property="from", type="integer", example=1),
      *                 @OA\Property(property="last_page", type="integer", example=5),
-     *                 @OA\Property(property="path", type="string", example="http://example.com/api/posts"),
-     *                 @OA\Property(property="per_page", type="integer", example=15),
-     *                 @OA\Property(property="to", type="integer", example=15),
+     *                 @OA\Property(property="path", type="string", example="http://example.com/api/blog-content"),
+     *                 @OA\Property(
+     *                     property="links",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="url", type="string", nullable=true, example="http://localhost/Blog/public/api/blog-content?page=1"),
+     *                         @OA\Property(property="label", type="string", example="1"),
+     *                         @OA\Property(property="active", type="boolean", example=true)
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="per_page", type="integer", example=20),
+     *                 @OA\Property(property="to", type="integer", example=20),
      *                 @OA\Property(property="total", type="integer", example=50)
      *             ),
      *             @OA\Property(
@@ -119,7 +129,7 @@ class BlogContentController extends Controller
         $request->validate([
             'nameKey' => 'required|string',
         ]);
-        $users = User::where('name','like','%'.$request->nameKey.'%')->select('id','name','email','favicon')->get();
+        $users = User::query()->where('name', 'like', '%' . $request->nameKey . '%')->select(['id', 'name', 'email', 'favicon'])->get();
 
         return response( UserResource::collection($users)->additional
             ([
@@ -163,9 +173,19 @@ class BlogContentController extends Controller
      *                 @OA\Property(property="current_page", type="integer", example=1),
      *                 @OA\Property(property="from", type="integer", example=1),
      *                 @OA\Property(property="last_page", type="integer", example=5),
-     *                 @OA\Property(property="path", type="string", example="http://example.com/api/posts"),
-     *                 @OA\Property(property="per_page", type="integer", example=15),
-     *                 @OA\Property(property="to", type="integer", example=15),
+     *                 @OA\Property(property="path", type="string", example="http://example.com/api/blog-content/posts-user/{id}"),
+     *                 @OA\Property(
+     *                     property="links",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="url", type="string", nullable=true, example="http://localhost/Blog/public/api//blog-content/posts-user/{id}?page=1"),
+     *                         @OA\Property(property="label", type="string", example="1"),
+     *                         @OA\Property(property="active", type="boolean", example=true)
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="per_page", type="integer", example=20),
+     *                 @OA\Property(property="to", type="integer", example=20),
      *                 @OA\Property(property="total", type="integer", example=50)
      *             ),
      *             @OA\Property(property="reactos",type="array",@OA\Items(ref="#/components/schemas/ReactResource"))

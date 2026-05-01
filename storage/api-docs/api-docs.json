@@ -718,15 +718,36 @@
                                                 },
                                                 "path": {
                                                     "type": "string",
-                                                    "example": "http://example.com/api/posts"
+                                                    "example": "http://example.com/api/blog-content"
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string",
+                                                                "example": "http://localhost/Blog/public/api/blog-content?page=1",
+                                                                "nullable": true
+                                                            },
+                                                            "label": {
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
                                                 },
                                                 "per_page": {
                                                     "type": "integer",
-                                                    "example": 15
+                                                    "example": 20
                                                 },
                                                 "to": {
                                                     "type": "integer",
-                                                    "example": 15
+                                                    "example": 20
                                                 },
                                                 "total": {
                                                     "type": "integer",
@@ -910,15 +931,36 @@
                                                 },
                                                 "path": {
                                                     "type": "string",
-                                                    "example": "http://example.com/api/posts"
+                                                    "example": "http://example.com/api/blog-content/posts-user/{id}"
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string",
+                                                                "example": "http://localhost/Blog/public/api//blog-content/posts-user/{id}?page=1",
+                                                                "nullable": true
+                                                            },
+                                                            "label": {
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
                                                 },
                                                 "per_page": {
                                                     "type": "integer",
-                                                    "example": 15
+                                                    "example": 20
                                                 },
                                                 "to": {
                                                     "type": "integer",
-                                                    "example": 15
+                                                    "example": 20
                                                 },
                                                 "total": {
                                                     "type": "integer",
@@ -1023,13 +1065,34 @@
                                                     "type": "string",
                                                     "example": "http://example.com/api/comments"
                                                 },
+                                                "links": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string",
+                                                                "example": "http://localhost/Blog/public/api/comments?page=1",
+                                                                "nullable": true
+                                                            },
+                                                            "label": {
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
                                                 "per_page": {
                                                     "type": "integer",
-                                                    "example": 15
+                                                    "example": 20
                                                 },
                                                 "to": {
                                                     "type": "integer",
-                                                    "example": 15
+                                                    "example": 20
                                                 },
                                                 "total": {
                                                     "type": "integer",
@@ -1400,13 +1463,34 @@
                                                     "type": "string",
                                                     "example": "http://example.com/api/posts"
                                                 },
+                                                "links": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string",
+                                                                "example": "http://localhost/Blog/public/api/posts?page=1",
+                                                                "nullable": true
+                                                            },
+                                                            "label": {
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
                                                 "per_page": {
                                                     "type": "integer",
-                                                    "example": 15
+                                                    "example": 20
                                                 },
                                                 "to": {
                                                     "type": "integer",
-                                                    "example": 15
+                                                    "example": 20
                                                 },
                                                 "total": {
                                                     "type": "integer",
@@ -2552,15 +2636,36 @@
                                                                 },
                                                                 "path": {
                                                                     "type": "string",
-                                                                    "example": "http://example.com/api/posts"
+                                                                    "example": "http://example.com/api/users"
+                                                                },
+                                                                "links": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "url": {
+                                                                                "type": "string",
+                                                                                "example": "http://localhost/Blog/public/api/users?page=1",
+                                                                                "nullable": true
+                                                                            },
+                                                                            "label": {
+                                                                                "type": "string",
+                                                                                "example": "1"
+                                                                            },
+                                                                            "active": {
+                                                                                "type": "boolean",
+                                                                                "example": true
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
                                                                 },
                                                                 "per_page": {
                                                                     "type": "integer",
-                                                                    "example": 15
+                                                                    "example": 20
                                                                 },
                                                                 "to": {
                                                                     "type": "integer",
-                                                                    "example": 15
+                                                                    "example": 20
                                                                 },
                                                                 "total": {
                                                                     "type": "integer",

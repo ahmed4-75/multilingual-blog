@@ -54,8 +54,18 @@ class CommentsController extends Controller
      *                 @OA\Property(property="from", type="integer", example=1),
      *                 @OA\Property(property="last_page", type="integer", example=5),
      *                 @OA\Property(property="path", type="string", example="http://example.com/api/comments"),
-     *                 @OA\Property(property="per_page", type="integer", example=15),
-     *                 @OA\Property(property="to", type="integer", example=15),
+     *                 @OA\Property(
+     *                     property="links",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="url", type="string", nullable=true, example="http://localhost/Blog/public/api/comments?page=1"),
+     *                         @OA\Property(property="label", type="string", example="1"),
+     *                         @OA\Property(property="active", type="boolean", example=true)
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="per_page", type="integer", example=20),
+     *                 @OA\Property(property="to", type="integer", example=20),
      *                 @OA\Property(property="total", type="integer", example=50)
      *             ),
      *             @OA\Property(property="reactos",type="array",@OA\Items(ref="#/components/schemas/ReactResource"))
