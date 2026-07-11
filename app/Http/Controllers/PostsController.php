@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Enums\PermissionsEnum;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\ReactResource;
+use App\Jobs\NotificationProcess;
 use App\Models\Comment;
+use App\Models\Post;
 use App\Models\React;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -71,12 +72,12 @@ class PostsController extends Controller
      *             )
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=403,
      *         description="Show my posts from deactivated account",
@@ -98,7 +99,7 @@ class PostsController extends Controller
             ], 403);
         }
         $myPosts = $user->posts()->withTrashed()->with(['comments.reactos','reactos'])->paginate(15);
-        $reactos = React::select('id','name')->get();
+        $reactos = React::select(['id','name'])->get();
 
         return response( PostResource::collection($myPosts)->additional
             ([
@@ -116,7 +117,7 @@ class PostsController extends Controller
      *     tags={"My Posts"},
      *     description="Authenticated user Create Post",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -125,7 +126,7 @@ class PostsController extends Controller
      *             @OA\Property(property="lang", type="string", enum={"ar","en","ur","sp"}, example="ar")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=201,
      *         description="store post",
@@ -134,12 +135,12 @@ class PostsController extends Controller
      *             @OA\Property(property="message", type="string", example="Post Created Successfully")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=403,
      *         description="Store post from deactivated account or unauthorized",
@@ -148,7 +149,7 @@ class PostsController extends Controller
      *             @OA\Property(property="message", type="string", example="User Account is deactivated or Unauthorized")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Validation error"
@@ -157,8 +158,6 @@ class PostsController extends Controller
     */
     public function store(CreatePostRequest $request)
     {
-        
-        /** @var \App\Models\User $user */
         $user = Auth::user();
         if ($user->trashed()) {
             return response()->json([
@@ -166,7 +165,9 @@ class PostsController extends Controller
                 'message' => 'User Account is deactivated or Unauthorized'
             ], 403);
         }
-        $user->posts()->create($request->validated());
+        $post = $user->posts()->create($request->validated());
+
+        NotificationProcess::dispatch('newPost',$post->id)->onQueue('NewPostNotifications');
 
         return response()->json([
             'status' => 'Success',
@@ -176,11 +177,66 @@ class PostsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
+     * @OA\Get(
+     *     path="/api/posts/{post}",
+     *     summary="Show Post",
+     *     tags={"My Posts"},
+     *     description="Authenticated user show Post",
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Parameter(name="post",in="path",required=true,description="Post id", @OA\Schema(type="integer", example=1)),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="show post",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="Success"),
+     *             @OA\Property(property="message", type="string", example="Post Updated Successfully"),
+     *             @OA\Property(property="data",type="object",ref="#/components/schemas/PostResource")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated."
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="show post from deactivated account unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="Error"),
+     *             @OA\Property(property="message", type="string", example="User Account is deactivated or Unauthorized")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Post not found"
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     )
+     * )
+    */
     public function show(string $id)
     {
-        //
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->trashed()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'User Account is deactivated'
+            ], 403);
+        }
+        $post = Post::query()->findOrFail($id);
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Post retrieved Successfully',
+            'data' => new PostResource($post)
+        ]);
     }
 
     /**
@@ -190,9 +246,9 @@ class PostsController extends Controller
      *     tags={"My Posts"},
      *     description="Authenticated user update Post",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\Parameter(name="post",in="path",required=true,description="Post id", @OA\Schema(type="integer", example=1)),
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -201,7 +257,7 @@ class PostsController extends Controller
      *             @OA\Property(property="lang", type="string", enum={"ar","en","ur","sp"}, example="ar")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="update post",
@@ -210,12 +266,12 @@ class PostsController extends Controller
      *             @OA\Property(property="message", type="string", example="Post Updated Successfully")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=403,
      *         description="Update post from deactivated account unauthorized",
@@ -224,12 +280,12 @@ class PostsController extends Controller
      *             @OA\Property(property="message", type="string", example="User Account is deactivated or Unauthorized")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Post not found"
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Validation error"
@@ -262,9 +318,9 @@ class PostsController extends Controller
      *     tags={"My Posts"},
      *     description="Authenticated user delete Post",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\Parameter(name="post",in="path",required=true,description="Post id", @OA\Schema(type="integer", example=1)),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="delete post",
@@ -273,12 +329,12 @@ class PostsController extends Controller
      *             @OA\Property(property="message", type="string", example="Post Deleted Successfully")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Post not found"
@@ -314,9 +370,9 @@ class PostsController extends Controller
      *     tags={"My Posts"},
      *     description="Authenticated user Make the Post Private",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\Parameter(name="post",in="path",required=true,description="Post id", @OA\Schema(type="integer", example=1)),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="delete post",
@@ -325,12 +381,12 @@ class PostsController extends Controller
      *             @OA\Property(property="message", type="string", example="The Post is Private Successfully")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Post not found"
@@ -358,9 +414,9 @@ class PostsController extends Controller
      *     tags={"My Posts"},
      *     description="Authenticated user Make the Post Public",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\Parameter(name="post",in="path",required=true,description="Post id", @OA\Schema(type="integer", example=1)),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="restore post",
@@ -369,12 +425,12 @@ class PostsController extends Controller
      *             @OA\Property(property="message", type="string", example="The Post is Public Successfully")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Post not found"

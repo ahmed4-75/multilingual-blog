@@ -29,7 +29,7 @@ class RolesController extends Controller
      *     summary="Roles and all available Permissions.",
      *     description="Show all Roles with their Permissions, and all available Permissions.",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Successful response",
@@ -45,12 +45,12 @@ class RolesController extends Controller
      *             )
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated"
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=403,
      *         description="Unauthorized Action"
@@ -60,7 +60,7 @@ class RolesController extends Controller
     public function index()
     {
         $roles = Role::with('permissions')->get();
-        $permissions = Permission::get();
+        $permissions = Permission::query()->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'All Roles and Their Permissions and All Available Permissions',
@@ -78,7 +78,7 @@ class RolesController extends Controller
      *     tags={"Authorization"},
      *     description="Authenticated user Create Role",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -86,7 +86,7 @@ class RolesController extends Controller
      *             @OA\Property(property="name", type="string", maxLength=50, description="unique in table roles,name", example="admin")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=201,
      *         description="store role",
@@ -95,17 +95,17 @@ class RolesController extends Controller
      *             @OA\Property(property="message", type="string", example="Role Added Successfully")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=403,
      *         description="Store role unauthorized",
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Validation error"
@@ -129,9 +129,9 @@ class RolesController extends Controller
      *     tags={"Authorization"},
      *     description="Authenticated user Update Role",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\Parameter(name="role",in="path",required=true,description="Role id", @OA\Schema(type="integer", example=1)),
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -140,7 +140,7 @@ class RolesController extends Controller
      *             @OA\Property(property="permissions",type="array",description="Array of permission IDs exists in table permissions,id",@OA\Items(type="integer",example=1))
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="update role",
@@ -149,22 +149,22 @@ class RolesController extends Controller
      *             @OA\Property(property="message", type="string", example="Role Edited Successfully")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=403,
      *         description="Update role Unauthorized",
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Role not found"
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Validation error"
@@ -189,9 +189,9 @@ class RolesController extends Controller
      *     tags={"Authorization"},
      *     description="Authenticated user delete Role",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\Parameter(name="role",in="path",required=true,description="Role id", @OA\Schema(type="integer", example=1)),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="delete role",
@@ -200,12 +200,12 @@ class RolesController extends Controller
      *             @OA\Property(property="message", type="string", example="Role Deleted Successfully")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Role not found"
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=403,
      *         description="delete role Unauthorized "

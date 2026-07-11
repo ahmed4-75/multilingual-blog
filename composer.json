@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.25",
         "laravel/tinker": "^2.9",
+        "predis/predis": "^3.5",
         "propaganistas/laravel-phone": "^6.0"
     },
     "require-dev": {
