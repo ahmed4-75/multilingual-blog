@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\ReactCommentRequest;
 use App\Http\Requests\ReactPostRequest;
+use App\Jobs\NotificationProcess;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +19,7 @@ class ReactosController extends Controller
      *     tags={"My Reactos"},
      *     description="Choose or Change the React of a Post",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -28,7 +28,7 @@ class ReactosController extends Controller
      *             @OA\Property(property="post_id", type="integer", description="exists:posts,id", example="1")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Choose or Change the React of a Post",
@@ -39,17 +39,17 @@ class ReactosController extends Controller
 
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=403,
      *         description="Unauthorized Action"
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Post not found"
@@ -60,13 +60,15 @@ class ReactosController extends Controller
     {
         $user = Auth::user();
 
-        DB::transaction(function () use ( $request, $user) {
-            $post = Post::where('id', $request->post_id)->lockForUpdate()->firstOrFail();
+        $post = DB::transaction(function () use ($request, $user) {
+            $post = Post::query()->where('id', $request->post_id)->lockForUpdate()->firstOrFail();
             # If there is an old attached react, it's detached to replace a new React .
             $post->reactos()->wherePivot('user_id', $user->id)->detach();
             $post->reactos()->attach($request->react_id, ['user_id' => $user->id]);
+            return $post;
         });
-    
+        NotificationProcess::dispatch('newReactPost',$post->id)->onQueue('NewReactPostNotifications');
+
         return response()->json([
             'status' => 'Success',
             'message' => 'React set successfully'
@@ -80,7 +82,7 @@ class ReactosController extends Controller
      *     tags={"My Reactos"},
      *     description="Choose or Change the React of a Comment",
      *     security={{"sanctum":{}}},
-     * 
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -89,7 +91,7 @@ class ReactosController extends Controller
      *             @OA\Property(property="comment_id", type="integer", description="exists:comments,id", example="1")
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Choose or Change the React of a Comment",
@@ -100,17 +102,17 @@ class ReactosController extends Controller
 
      *         )
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated."
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=403,
      *         description="Unauthorized Action"
      *     ),
-     * 
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Comment not found"
@@ -122,12 +124,12 @@ class ReactosController extends Controller
         $user = Auth::user();
 
         DB::transaction(function () use ( $request, $user) {
-            $comment = Comment::where('id', $request->comment_id)->lockForUpdate()->firstOrFail();
+            $comment = Comment::query()->where('id', $request->comment_id)->lockForUpdate()->firstOrFail();
             # If there is an old attached react, it's detached to replace a new React .
             $comment->reactos()->wherePivot('user_id', $user->id)->detach();
             $comment->reactos()->attach($request->react_id, ['user_id' => $user->id]);
         });
-    
+
         return response()->json([
             'status' => 'Success',
             'message' => 'React set successfully'

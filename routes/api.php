@@ -31,7 +31,7 @@ Route::get('/auth/{driver}/redirect/{type}',[SocialAuthController::class,'redire
 Route::get('/auth/{driver}/callback',[SocialAuthController::class,'callback']);
 
 Route::middleware(['auth:sanctum'])->group(function(){
-    Route::get('/profile',[ProfileController::class,'index']);  
+    Route::get('/profile',[ProfileController::class,'index']);
     Route::post('/profile/update',[ProfileController::class,'update']);
     Route::put('/profile/update-password',[ProfileController::class,'updatePassword']);
     Route::post('/logout',[ProfileController::class,'logout']);
@@ -57,4 +57,4 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/users/delete/{id}',[UsersController::class,'destroyUser'])->middleware('permission:'. PermissionsEnum::DESTROY_USER->value);
 
     Route::apiResource('roles',RolesController::class);
-});
+    });

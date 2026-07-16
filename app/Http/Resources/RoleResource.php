@@ -16,7 +16,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     @OA\Property(property="users", type="array", description="Loaded only if relation users is loaded", @OA\Items(ref="#/components/schemas/UserResource")),
  *     @OA\Property(property="permissions", type="array", description="Loaded only if relation permissions is loaded", @OA\Items(ref="#/components/schemas/PermissionResource"))
  * )
- */
+*/
 class RoleResource extends JsonResource
 {
     /**

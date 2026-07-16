@@ -16,7 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'permission' => PermissionMiddleware::class
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'test/*',
+            'test/',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->create();
