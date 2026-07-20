@@ -32,7 +32,7 @@ class CreateOwner extends Command
      */
     public function handle()
     {
-        if(!Role::where('name','owner')->first()){
+        if(!Role::query()->where('name','owner')->first()){
             Artisan::call('db:seed',['--class' => 'RoleAndPermissionSeeder']);
         }
         $name = $this->ask('What is the Owner Name');
@@ -42,9 +42,9 @@ class CreateOwner extends Command
 
         $validator = Validator::make([
             'name' => $name,
-            'email' => $email, 
-            'password' => $password, 
-            'lang' => $lang    
+            'email' => $email,
+            'password' => $password,
+            'lang' => $lang
         ],[
             'name' => 'required|string|max:50',
             'email' => 'required|string|email|unique:users,email',
@@ -60,13 +60,13 @@ class CreateOwner extends Command
         }
         $user = User::create([
             'name' => $name,
-            'email' => $email, 
-            'password' => Hash::make($password), 
+            'email' => $email,
+            'password' => Hash::make($password),
             'email_verified_at' => now(),
             'lang' => $lang,
             'favicon' => 'user_favicon.jpg'
         ]);
-        $ownerRole = Role::where('name','owner')->first();
+        $ownerRole = Role::query()->where('name','owner')->first();
         $user->roles()->attach($ownerRole->id);
         $this->info($name.' Owner Created Successfully');
     }

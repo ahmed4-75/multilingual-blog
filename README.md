@@ -80,6 +80,12 @@ Answer the questions to create your first User, and his role is "owner", and it 
 ```bash
 php artisan db:seed --class=ReactSeeder
 ```
+
+### 5️⃣ Run Queues
+```bash
+php artisan queue:work
+```
+
 ---
 ---
 ### 🚀 Run the Application
