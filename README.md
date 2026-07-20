@@ -10,15 +10,18 @@ A web-based **Multilingual Blog** built using **Laravel**, designed to manage Mu
 - User authentication (Register / verifyEmail )
 - User authentication (Login / Login no Password)
 - User authentication (Login / Register) by Google and Github
+- Sending Mail to verify Email and Reset Password
 - display ,update user Profile and his favicon
 - Create, update, delete ,display user public posts and privet posts
 - Create, update, delete ,display comments
 - Browsing Multi language all posts and comments
 - Search user posts
 - choose a react on posts and comments
+- Send Notifications Mail for new post and new React on posts
+- Using Queue & Jobs to Send notifications stored in Rides
 - User authorization display Users and Change role or ban or activate or destroy User
 - User authorization Roles (create / update / delete) 
-- User authorization permissions
+- User authorization Middleware permissions
 
 ---
 
@@ -77,6 +80,12 @@ Answer the questions to create your first User, and his role is "owner", and it 
 ```bash
 php artisan db:seed --class=ReactSeeder
 ```
+
+### 5️⃣ Run Queues
+```bash
+php artisan queue:work
+```
+
 ---
 ---
 ### 🚀 Run the Application

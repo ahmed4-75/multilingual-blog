@@ -17,7 +17,7 @@ class ReactosController extends Controller
      *     path="/api/reactos/post",
      *     summary="Set a React to a Post",
      *     tags={"My Reactos"},
-     *     description="Choose or Change the React of a Post",
+     *     description="Choose or Change the React of a Post and get a notification",
      *     security={{"sanctum":{}}},
      *
      *     @OA\RequestBody(

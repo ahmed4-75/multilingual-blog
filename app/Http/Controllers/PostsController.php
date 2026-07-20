@@ -115,7 +115,7 @@ class PostsController extends Controller
      *     path="/api/posts",
      *     summary="Create My Post",
      *     tags={"My Posts"},
-     *     description="Authenticated user Create Post",
+     *     description="Authenticated user Create Post and dispatches notification jobs",
      *     security={{"sanctum":{}}},
      *
      *     @OA\RequestBody(
@@ -173,7 +173,6 @@ class PostsController extends Controller
             'status' => 'Success',
             'message' => 'Post Created Successfully'
         ], 201);
-
     }
 
     /**
